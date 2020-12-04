@@ -5,12 +5,15 @@ import markdownItDeflist from "markdown-it-deflist";
 import markdownItImplicitFigures from "markdown-it-implicit-figures";
 import markdownItTableOfContents from "markdown-it-table-of-contents";
 import markdownItRuby from "markdown-it-ruby";
+import markdownItImsize from "markdown-it-imsize";
+
 import markdownItSpan from "./markdown-it-span";
-import markdownItRemovepre from "./markdown-it-removepre";
+import markdownItTableContainer from "./markdown-it-table-container";
 import markdownItLinkfoot from "./markdown-it-linkfoot";
 import markdownItImageFlow from "./markdown-it-imageflow";
+import markdownItMultiquote from "./markdown-it-multiquote";
 import highlightjs from "./langHighlight";
-import markdownLiReplacer from "./markdown-it-li";
+import markdownItLiReplacer from "./markdown-it-li";
 
 export const axiosGithub = axios.create({
   baseURL: "https://api.github.com",
@@ -51,57 +54,22 @@ export const deCode = (str) => {
   return decodeURIComponent(escape(window.atob(str)));
 };
 
-// 专门微信代码高亮的解析器
-export const markdownParserWechat = new MarkdownIt({
-  html: true,
-  highlight: (str, lang) => {
-    const text = str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const lines = text.split("\n");
-    const codeLines = [];
-    const numbers = [];
-    for (let i = 0; i < lines.length - 1; i++) {
-      codeLines.push('<code><span class="code-snippet_outer">' + (lines[i] || "<br>") + "</span></code>");
-      numbers.push("<li></li>");
-    }
-    return (
-      '<section class="code-snippet__fix code-snippet__js">' +
-      '<ul class="code-snippet__line-index code-snippet__js">' +
-      numbers.join("") +
-      "</ul>" +
-      '<pre class="code-snippet__js" data-lang="' +
-      lang +
-      '">' +
-      codeLines.join("") +
-      "</pre></section>"
-    );
-  },
-});
-
-markdownParserWechat
-  .use(markdownItSpan) // 在标题标签中添加span
-  .use(markdownItRemovepre) // 移除代码段中的 pre code
-  .use(markdownItMath) // 数学公式
-  .use(markdownItLinkfoot) // 修改脚注
-  .use(markdownItTableOfContents, {
-    transformLink: () => "",
-    includeLevel: [2, 3],
-  }) // TOC仅支持二级和三级标题
-  .use(markdownItRuby) // 注音符号
-  .use(markdownItImplicitFigures, {figcaption: true}) // 图示
-  .use(markdownItDeflist) // 定义列表
-  .use(markdownLiReplacer) // li 标签中加入 p 标签
-  .use(markdownItImageFlow); // 横屏移动插件
-
 // 普通解析器，代码高亮用highlight
 export const markdownParser = new MarkdownIt({
   html: true,
   highlight: (str, lang) => {
+    if (lang === undefined || lang === "") {
+      lang = "bash";
+    }
     // 加上custom则表示自定义样式，而非微信专属，避免被remove pre
     if (lang && highlightjs.getLanguage(lang)) {
       try {
-        return (
-          '<pre class="custom"><code class="hljs">' + highlightjs.highlight(lang, str, true).value + "</code></pre>"
-        );
+        const formatted = highlightjs
+          .highlight(lang, str, true)
+          .value.replace(/\n/g, "<br/>") // 换行用br表示
+          .replace(/\s/g, "&nbsp;") // 用nbsp替换空格
+          .replace(/span&nbsp;/g, "span "); // span标签修复
+        return '<pre class="custom"><code class="hljs">' + formatted + "</code></pre>";
       } catch (e) {
         console.log(e);
       }
@@ -112,17 +80,21 @@ export const markdownParser = new MarkdownIt({
 
 markdownParser
   .use(markdownItSpan) // 在标题标签中添加span
+  .use(markdownItTableContainer) // 在表格外部添加容器
   .use(markdownItMath) // 数学公式
   .use(markdownItLinkfoot) // 修改脚注
   .use(markdownItTableOfContents, {
     transformLink: () => "",
     includeLevel: [2, 3],
+    markerPattern: /^\[toc\]/im,
   }) // TOC仅支持二级和三级标题
   .use(markdownItRuby) // 注音符号
   .use(markdownItImplicitFigures, {figcaption: true}) // 图示
   .use(markdownItDeflist) // 定义列表
-  .use(markdownLiReplacer) // li 标签中加入 p 标签
-  .use(markdownItImageFlow); // 横屏移动插件
+  .use(markdownItLiReplacer) // li 标签中加入 p 标签
+  .use(markdownItImageFlow) // 横屏移动插件
+  .use(markdownItMultiquote) // 给多级引用加 class
+  .use(markdownItImsize);
 
 export const replaceStyle = (id, css) => {
   const style = document.getElementById(id);
@@ -264,4 +236,35 @@ export const updateMathjax = () => {
   window.MathJax.texReset();
   window.MathJax.typesetClear();
   window.MathJax.typesetPromise();
+};
+
+export const download = (content, filename) => {
+  const eleLink = document.createElement("a");
+  eleLink.download = filename;
+  eleLink.style.display = "none";
+  // 字符内容转变成blob地址
+  const blob = new Blob([content]);
+  eleLink.href = URL.createObjectURL(blob);
+  // 触发点击
+  document.body.appendChild(eleLink);
+  eleLink.click();
+  // 然后移除
+  document.body.removeChild(eleLink);
+};
+
+export const isPlatformWindows = /windows|win32/i.test(navigator.userAgent);
+
+export const wordCalc = (data) => {
+  const pattern = /[a-zA-Z0-9_\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
+  const m = data.match(pattern);
+  let count = 0;
+  if (m === null) return count;
+  for (let i = 0; i < m.length; i++) {
+    if (m[i].charCodeAt(0) >= 0x4e00) {
+      count += m[i].length;
+    } else {
+      count += 1;
+    }
+  }
+  return count;
 };

@@ -1,21 +1,46 @@
 import {observable, action} from "mobx";
-import {IMAGE_HOSTING_TYPE, ALIOSS_IMAGE_HOSTING, QINIUOSS_IMAGE_HOSTING} from "../utils/constant";
+import {
+  IMAGE_HOSTING_TYPE,
+  ALIOSS_IMAGE_HOSTING,
+  QINIUOSS_IMAGE_HOSTING,
+  GITEE_IMAGE_HOSTING,
+  GITHUB_IMAGE_HOSTING,
+} from "../utils/constant";
 
 class ImageHosting {
-  @observable type = "SM.MS";
+  @observable type = "";
+
+  @observable hostingList = [];
+
+  @observable hostingUrl = "";
+
+  @observable hostingName = "";
 
   @action
   setType = (type) => {
     this.type = type;
   };
+
+  @action
+  setHostingUrl = (url) => {
+    this.hostingUrl = url;
+  };
+
+  @action
+  setHostingName = (name) => {
+    this.hostingName = name;
+  };
+
+  @action
+  addImageHosting = (name) => {
+    this.hostingList.push({
+      value: name,
+      label: name,
+    });
+  };
 }
 
 const store = new ImageHosting();
-
-// 如果为空先把数据放进去
-if (!window.localStorage.getItem(IMAGE_HOSTING_TYPE)) {
-  window.localStorage.setItem(IMAGE_HOSTING_TYPE, "SM.MS");
-}
 
 // 如果为空先把数据放进去
 if (!window.localStorage.getItem(ALIOSS_IMAGE_HOSTING)) {
@@ -41,20 +66,26 @@ if (!window.localStorage.getItem(QINIUOSS_IMAGE_HOSTING)) {
   window.localStorage.setItem(QINIUOSS_IMAGE_HOSTING, qiniuoss);
 }
 
-/* 用于平滑升级，因为之前缺少两个字段，将来删除 */
-const temQiniu = JSON.parse(window.localStorage.getItem(QINIUOSS_IMAGE_HOSTING));
-if (temQiniu.domain === undefined) {
-  const qiniuoss = JSON.stringify({
-    region: "",
-    accessKey: "",
-    secretKey: "",
-    bucket: "",
-    domain: "https://",
-    namespace: "",
+// 如果为空先把数据放进去
+if (!window.localStorage.getItem(GITEE_IMAGE_HOSTING)) {
+  const gitee = JSON.stringify({
+    username: "",
+    repo: "",
+    token: "",
   });
-  window.localStorage.setItem(QINIUOSS_IMAGE_HOSTING, qiniuoss);
+  window.localStorage.setItem(GITEE_IMAGE_HOSTING, gitee);
 }
-/* 用于平滑升级，因为之前缺少两个字段，将来删除 */
+
+// 如果为空先把数据放进去
+if (!window.localStorage.getItem(GITHUB_IMAGE_HOSTING)) {
+  const github = JSON.stringify({
+    username: "",
+    repo: "",
+    token: "",
+    jsdelivr: "true",
+  });
+  window.localStorage.setItem(GITHUB_IMAGE_HOSTING, github);
+}
 
 store.type = window.localStorage.getItem(IMAGE_HOSTING_TYPE);
 

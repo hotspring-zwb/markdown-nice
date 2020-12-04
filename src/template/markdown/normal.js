@@ -25,11 +25,15 @@ export default `/* 全局属性
 }
 
 /* 一级标题内容 */
-#nice h1 span {
+#nice h1 .content {
 }
 
-/* 一级标题修饰 请参考有实例的主题 */
-#nice h1:after {
+/* 一级标题前缀 */
+#nice h1 .prefix {
+}
+
+/* 一级标题后缀 */
+#nice h1 .suffix {
 }
 
 /* 二级标题 */
@@ -37,11 +41,15 @@ export default `/* 全局属性
 }
 
 /* 二级标题内容 */
-#nice h2 span {
+#nice h2 .content {
 }
 
-/* 二级标题修饰 请参考有实例的主题 */
-#nice h2:after {
+/* 二级标题前缀 */
+#nice h2 .prefix {
+}
+
+/* 二级标题后缀 */
+#nice h2 .suffix {
 }
 
 /* 三级标题 */
@@ -49,11 +57,15 @@ export default `/* 全局属性
 }
 
 /* 三级标题内容 */
-#nice h3 span {
+#nice h3 .content {
 }
 
-/* 三级标题修饰 请参考有实例的主题 */
-#nice h3:after {
+/* 三级标题前缀 */
+#nice h3 .prefix {
+}
+
+/* 三级标题后缀 */
+#nice h3 .suffix {
 }
 
 /* 无序列表整体样式
@@ -62,7 +74,7 @@ export default `/* 全局属性
 #nice ul {
 }
 
-/* 无序列表整体样式
+/* 有序列表整体样式
  * list-style-type: upper-roman|lower-greek|lower-alpha;
  */
 #nice ol {
@@ -73,15 +85,33 @@ export default `/* 全局属性
 #nice li section {
 }
 
-/* 引用
-* 左边缘颜色 border-left-color: black;
-* 背景色 background: gray;
-*/
-#nice blockquote {
+/* 一级引用
+ * 左边缘颜色 border-left-color: black;
+ * 背景色 background: gray;
+ */
+#nice .multiquote-1 {
 }
 
-/* 引用文字 */
-#nice blockquote p {
+/* 一级引用文字 */
+#nice .multiquote-1 p {
+}
+
+/* 二级引用
+ */
+#nice .multiquote-2 {
+}
+
+/* 二级引用文字 */
+#nice .multiquote-2 p {
+}
+
+/* 三级引用
+ */
+#nice .multiquote-3 {
+}
+
+/* 三级引用文字 */
+#nice .multiquote-3 p {
 }
 
 /* 链接 
@@ -99,7 +129,7 @@ export default `/* 全局属性
 }
 
 /* 加粗斜体 */
-#nice strong em {
+#nice em strong {
 }
 
 /* 删除线 */
@@ -126,10 +156,10 @@ export default `/* 全局属性
 }
 
 /* 行内代码 */
-#nice p code, li code {
+#nice p code, #nice li code {
 }
 
-/* 非微信代码块
+/* 
  * 代码块不换行 display: -webkit-box !important;
  * 代码块换行 display: block;
  */
@@ -144,6 +174,15 @@ export default `/* 全局属性
  */
 #nice table tr th,
 #nice table tr td {
+}
+
+/* 
+ * 某一列表格列宽控制
+ * n 可以修改为具体数字，不修改时表示所有列
+ * 最小列宽 min-width: 85px;
+ */
+#nice table tr th:nth-of-type(n),
+#nice table tr td:nth-of-type(n){
 }
 
 /* 脚注文字 */

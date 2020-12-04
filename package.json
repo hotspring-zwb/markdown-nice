@@ -2,11 +2,11 @@
   "name": "markdown-nice",
   "author": "mdnice",
   "description": "a markdown editor with the function of style edition",
-  "version": "0.1.5",
+  "version": "1.8.22",
   "private": false,
   "main": "lib/Lib.js",
   "module": "lib/Lib.js",
-  "homepage": "https://mdnice.com",
+  "homepage": "https://www.mdnice.com",
   "license": "GPL-3.0",
   "typings": "./lib/index.d.ts",
   "repository": {
@@ -16,42 +16,54 @@
   "scripts": {
     "start": "node scripts/start.js",
     "watch": "node ./watch.js",
-    "build": "node scripts/build.js",
+    "build": "node --max_old_space_size=4096 scripts/build.js",
     "test": "node scripts/test.js",
     "analyze": "source-map-explorer build/static/js/*.js",
-    "publish:npm": "cross-env NODE_ENV=production && rm -rf lib && mkdir lib && npx babel src --out-dir lib --copy-files"
+    "lint": "eslint src --ext ts,tsx,js --fix",
+    "publish:npm": "cross-env NODE_ENV=production && rm -rf lib && mkdir lib && cross-env BABEL_ENV=production npx babel src --out-dir lib --copy-files",
+    "storybook": "npm run publish:npm && start-storybook -p 9001 -c .storybook"
   },
   "dependencies": {
+    "@sitdown/juejin": "^1.1.1",
+    "@sitdown/wechat": "^1.1.4",
+    "@sitdown/zhihu": "^1.1.2",
     "@uiw/react-codemirror": "^1.0.28",
     "ali-oss": "^6.1.1",
     "antd": "^3.15.1",
     "axios": "^0.18.0",
+    "diff-match-patch": "^1.0.4",
     "highlight.js": "^9.15.6",
     "juice": "^5.2.0",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "markdown-it": "^8.4.2",
     "markdown-it-deflist": "^2.0.3",
     "markdown-it-footnote": "^3.0.1",
     "markdown-it-implicit-figures": "^0.9.0",
+    "markdown-it-imsize": "^2.0.1",
     "markdown-it-katex": "^2.0.3",
     "markdown-it-ruby": "^0.1.1",
     "markdown-it-table-of-contents": "^0.4.4",
-    "mathjax": "^3.0.0",
+    "mathjax": "^3.0.1",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "qiniu-js": "^2.5.4",
     "react": "16.10.2",
     "react-dom": "16.10.2",
-    "react-helmet": "^5.2.1"
+    "react-helmet": "^5.2.1",
+    "sitdown": "^1.1.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
     "@babel/core": "7.2.2",
+    "@storybook/react": "^4.1.11",
     "@svgr/webpack": "^4.1.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^9.0.0",
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.5",
+    "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-named-asset-import": "^0.3.1",
     "babel-preset-react-app": "^7.0.1",
     "bfj": "6.1.1",
@@ -92,6 +104,7 @@
     "postcss-preset-env": "6.5.0",
     "postcss-safe-parser": "4.0.1",
     "pretty-quick": "^1.11.1",
+    "raw-loader": "^4.0.0",
     "react-app-polyfill": "^0.2.1",
     "react-dev-utils": "^7.0.3",
     "resolve": "1.10.0",
@@ -179,10 +192,7 @@
       "jsx",
       "node"
     ],
-    "watchPlugins": [
-      "/Users/zhangyining/code/mark-app/node_modules/jest-watch-typeahead/filename.js",
-      "/Users/zhangyining/code/mark-app/node_modules/jest-watch-typeahead/testname.js"
-    ]
+    "watchPlugins": []
   },
   "babel": {
     "presets": [
@@ -201,7 +211,21 @@
           "loose": true
         }
       ]
-    ]
+    ],
+    "env": {
+      "production": {
+        "plugins": [
+          [
+            "babel-plugin-inline-import",
+            {
+              "extensions": [
+                ".md"
+              ]
+            }
+          ]
+        ]
+      }
+    }
   },
   "husky": {
     "hooks": {
@@ -209,7 +233,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{jsx,txs,ts,js,json,md}": [
+    "src/**/*.{jsx,txs,ts,js,json}": [
       "prettier --write",
       "eslint --fix",
       "git add"

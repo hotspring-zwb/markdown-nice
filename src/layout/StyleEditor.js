@@ -11,8 +11,6 @@ import "antd/dist/antd.css";
 import {observer, inject} from "mobx-react";
 
 import "../utils/styleMirror.css";
-import {TEMPLATE_CUSTOM_NUM, TEMPLATE_OPTIONS} from "../utils/constant";
-import TEMPLATE from "../template/index";
 
 @inject("content")
 @inject("navbar")
@@ -42,10 +40,12 @@ class StyleEditor extends Component {
       okText: "确定",
       onOk: () => {
         const {templateNum} = this.props.navbar;
-        const {id} = TEMPLATE_OPTIONS[templateNum];
-        const style = `/*自定义样式，实时生效*/\n\n` + TEMPLATE.style[id];
+        const {themeList} = this.props.content;
+        const {css} = themeList[templateNum];
+        const style = `/*自定义样式，实时生效*/\n\n` + css;
         this.props.content.setCustomStyle(style);
-        this.props.navbar.setTemplateNum(TEMPLATE_CUSTOM_NUM);
+        this.props.onStyleChange && this.props.onStyleChange(style);
+        this.props.navbar.setTemplateNum(themeList.length - 1);
       },
       onCancel: () => {},
     });
@@ -53,21 +53,27 @@ class StyleEditor extends Component {
 
   changeStyle = (editor) => {
     const {templateNum} = this.props.navbar;
+    const {themeList} = this.props.content;
     // focus状态很重要，初始化时被调用则不会进入条件
-    if (this.focus && templateNum !== TEMPLATE_CUSTOM_NUM) {
-      this.showConfirm();
-    } else if (this.focus) {
-      const style = editor.getValue();
-      this.props.content.setCustomStyle(style);
+    if (this.focus) {
+      if (templateNum !== themeList.length - 1) {
+        this.showConfirm();
+      } else {
+        const style = editor.getValue();
+        this.props.content.setCustomStyle(style);
+        this.props.onStyleChange && this.props.onStyleChange(style);
+      }
     }
   };
 
-  handleFocus = () => {
+  handleFocus = (editor) => {
     this.focus = true;
+    this.props.onStyleFocus && this.props.onStyleFocus(editor.getValue());
   };
 
-  handleBlur = () => {
+  handleBlur = (editor) => {
     this.focus = false;
+    this.props.onStyleBlur && this.props.onStyleBlur(editor.getValue());
   };
 
   render() {

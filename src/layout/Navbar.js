@@ -1,103 +1,51 @@
 import React, {Component} from "react";
 import {observer, inject} from "mobx-react";
-import {Button} from "antd";
+import classnames from "classnames";
 
-import ThemeSelect from "../component/ThemeSelect";
-import Format from "../component/Format";
-import Copy from "../component/Copy";
-import Reset from "../component/Reset";
-import Image from "../component/Image";
-import Link from "../component/Link";
-import Form from "../component/Form";
-import Code from "../component/Code";
-import Italic from "../component/Italic";
-import Bold from "../component/Bold";
-import Del from "../component/Del";
-import PreviewType from "../component/PreviewType";
-import FullScreen from "../component/FullScreen";
-// import LogIn from "../component/LogIn";
-// import User from "../component/User";
-import About from "../component/About";
-import Font from "../component/Font";
+import File from "../component/MenuLeft/File";
+import Help from "../component/MenuLeft/Help";
+import Tutorial from "../component/MenuLeft/Tutorial";
+import Pattern from "../component/MenuLeft/Pattern";
+import Function from "../component/MenuLeft/Function";
+import Theme from "../component/MenuLeft/Theme";
+import CodeTheme from "../component/MenuLeft/CodeTheme";
+import Setting from "../component/MenuLeft/Setting";
+import View from "../component/MenuLeft/View";
 
-const ButtonGroup = Button.Group;
+import "./Navbar.css";
 
-// @inject("userInfo")
-// @observer
+@inject("view")
+@observer
 class Navbar extends Component {
   render() {
-    const {title} = this.props;
+    const {title, token} = this.props;
+    const {isImmersiveEditing} = this.props.view;
+    const niceNavbarClass = classnames({
+      "nice-navbar": true,
+      "nice-navbar-hide": isImmersiveEditing,
+    });
     return (
-      <div style={style.navBar}>
-        <div style={style.leftNav}>
-          {title === "" ? null : <section style={style.title}>{title}</section>}
-          <div style={style.iconBar}>
-            <ButtonGroup style={style.btnGroupMargin}>
-              <Del />
-              <Bold />
-              <Italic />
-              <Code />
-            </ButtonGroup>
-            <ButtonGroup style={style.btnGroupMargin}>
-              <Link />
-              <Image />
-              <Form />
-            </ButtonGroup>
-            <ButtonGroup style={style.btnGroupMargin}>
-              <FullScreen />
-              <Font />
-              <Reset />
-              <About />
-            </ButtonGroup>
-          </div>
+      <div className={niceNavbarClass}>
+        <div className="nice-left-nav">
+          {title === "" ? null : (
+            <section id="nice-title" className="nice-title">
+              {title}
+            </section>
+          )}
+          <File />
+          <Pattern />
+          <Function />
+          <View />
+          <Theme token={token} />
+          <CodeTheme />
+          <Setting />
+          <Help />
+          <Tutorial />
         </div>
-        <div style={style.rightNav}>
-          <Copy />
-          <ThemeSelect />
-          <Format />
-          <PreviewType />
-
-          {/* {this.props.userInfo.userInfo.login ? <User /> : <LogIn />} */}
-        </div>
+        <div className="nice-right-nav" />
       </div>
     );
   }
 }
-
-const style = {
-  navBar: {
-    height: "64px",
-    display: "flex",
-    justifyContent: "space-between",
-    flex: "none",
-    padding: "20px",
-  },
-  leftNav: {
-    display: "flex",
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  rightNav: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  btnGroupMargin: {
-    marginRight: "10px",
-  },
-  btnGroupRight: {
-    marginRight: "20px",
-  },
-  iconBar: {
-    marginTop: 5,
-  },
-  title: {
-    marginRight: "20px",
-    fontWeight: "bold",
-    fontSize: "16px",
-    fontFamily: "Apple Chancery, cursive",
-  },
-};
 
 export default Navbar;

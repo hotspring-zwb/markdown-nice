@@ -4,7 +4,7 @@ export default `/*默认样式，最佳实践*/
 #nice {
   font-size: 16px;
   color: black;
-  padding: 10px;
+  padding: 0 10px;
   line-height: 1.6;
   word-spacing: 0px;
   letter-spacing: 0px;
@@ -12,6 +12,7 @@ export default `/*默认样式，最佳实践*/
   word-wrap: break-word;
   text-align: left;
   font-family: Optima-Regular, Optima, PingFangSC-light, PingFangTC-light, 'PingFang SC', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  /* margin-top: -10px; 解决开头空隙过大问题*/
 }
 
 /*段落*/
@@ -26,21 +27,22 @@ export default `/*默认样式，最佳实践*/
 
 /*标题*/
 #nice h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-top: 40px;
-  margin-bottom: 20px;
+#nice h2,
+#nice h3,
+#nice h4,
+#nice h5,
+#nice h6 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  padding: 0px;
   font-weight: bold;
   color: black;
 }
 #nice h1 {
-  font-size: 28px;
+  font-size: 24px;
 }
 #nice h2 {
-  font-size: 24px;
+  font-size: 22px;
 }
 #nice h3 {
   font-size: 20px;
@@ -55,9 +57,27 @@ h6 {
   font-size: 16px;
 }
 
+#nice h1 .prefix,
+#nice h2 .prefix,
+#nice h3 .prefix,
+#nice h4 .prefix,
+#nice h5 .prefix,
+#nice h6 .prefix {
+  display: none;
+}
+
+#nice h1 .suffix
+#nice h2 .suffix,
+#nice h3 .suffix,
+#nice h4 .suffix,
+#nice h5 .suffix,
+#nice h6 .suffix {
+  display: none;
+}
+
 /*列表*/
 #nice ul,
-ol {
+#nice ol {
   margin-top: 8px;
   margin-bottom: 8px;
   padding-left: 25px;
@@ -85,6 +105,10 @@ ol {
 
 /*引用*/
 #nice blockquote {
+  border: none;
+}
+
+#nice .multiquote-1 {
   display: block;
   font-size: 0.9em;
   overflow: auto;
@@ -100,10 +124,32 @@ ol {
   margin-top: 20px;
 }
 
-#nice blockquote p {
+#nice .multiquote-1 p {
   margin: 0px;
   color: black;
   line-height: 26px;
+}
+
+#nice .multiquote-2 {
+  box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
+  padding: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+#nice .multiquote-3 {
+  box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
+  padding: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+#nice .multiquote-3 p {
+  text-align: center;
+}
+
+#nice .multiquote-3 h3 {
+  text-align: center;
 }
 
 #nice .table-of-contents a {
@@ -134,7 +180,7 @@ ol {
 }
 
 /*加粗斜体*/
-#nice strong em {
+#nice em strong {
   font-weight: bold;
   color: black;
 }
@@ -161,7 +207,7 @@ ol {
   margin-bottom: 10px;
 }
 #nice pre code {
-  display: -webkit-box !important;
+  display: -webkit-box;
   font-family: Operator Mono, Consolas, Monaco, Menlo, monospace;
   border-radius: 0px;
   font-size: 12px;
@@ -172,7 +218,8 @@ ol {
 }
 
 /*行内代码*/
-#nice p code, li code{
+#nice p code,
+#nice li code {
   font-size: 14px;
   word-wrap: break-word;
   padding: 2px 4px;
@@ -188,7 +235,7 @@ ol {
 #nice img {
   display: block;
   margin: 0 auto;
-  width: 100%;
+  max-width: 100%;
 }
 
 /*图片*/
@@ -204,6 +251,12 @@ ol {
   text-align: center;
   color: #888;
   font-size: 14px;
+}
+
+
+/*表格容器 */
+#nice .table-container{
+  overflow-x: auto;
 }
 
 /*表格*/
@@ -226,7 +279,7 @@ ol {
 }
 
 #nice table tr th,
-table tr td {
+#nice table tr td {
   font-size: 16px;
   border: 1px solid #ccc;
   padding: 5px 10px;
@@ -238,66 +291,10 @@ table tr td {
   background-color: #f0f0f0;
 }
 
-/* 微信代码块 */
-#nice .code-snippet__fix {
-  word-wrap: break-word !important;
-  font-size: 14px;
-  margin: 10px 0;
-  display: block;
-  color: #333;
-  position: relative;
-  background-color: rgba(0,0,0,0.03);
-  border: 1px solid #f0f0f0;
-  border-radius: 2px;
-  display: flex;
-  line-height: 20px;
-}
-#nice .code-snippet__fix pre {
-  margin-bottom: 10px;
-  margin-top: 0px;
-}
-#nice .code-snippet__fix .code-snippet__line-index {
-  counter-reset: line;
-  flex-shrink: 0;
-  height: 100%;
-  padding: 1em;
-  list-style-type: none;
-  padding: 16px;
-  margin: 0;
-}
-#nice .code-snippet__fix .code-snippet__line-index li {
-  list-style-type: none;
-  text-align: right;
-  line-height: 26px;
-  color: black;
-  margin: 0;
-}
-#nice .code-snippet__fix .code-snippet__line-index li::before {
-  min-width: 1.5em;
-  text-align: right;
-  left: -2.5em;
-  counter-increment: line;
-  content: counter(line);
-  display: inline;
-  color: rgba(0,0,0,0.3);
-}
-#nice .code-snippet__fix pre {
-  overflow-x: auto;
-  padding: 16px;
-  padding-left: 0;
-  white-space: normal;
-  flex: 1;
-  -webkit-overflow-scrolling: touch;
-}
-#nice .code-snippet__fix code {
-  text-align: left;
-  font-size: 14px;
-  display: block;
-  white-space: pre;
-  display: flex;
-  position: relative;
-  font-family: Consolas,"Liberation Mono",Menlo,Courier,monospace;
-  padding: 0px;
+/* 表格最小列宽4个汉字 */
+#nice table tr th:nth-of-type(n),
+#nice table tr td:nth-of-type(n){
+  min-width:85px;
 }
 
 #nice .footnote-word {
@@ -366,7 +363,8 @@ table tr td {
 }
 
 #nice .imageflow-layer1 {
-  margin: 1em auto;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
   white-space: normal;
   border: 0px none;
   padding: 0px;
@@ -389,5 +387,51 @@ table tr td {
 
 #nice .imageflow-img {
   display: inline-block;
+}
+
+#nice .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
+}
+
+#nice .nice-suffix-juejin-container {
+  margin-top: 20px !important;
+}
+
+#nice figure a {
+  border: none;
+}
+
+#nice figure a img {
+  margin: 0px;
+}
+
+#nice figure {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 图片链接嵌套 */
+#nice figure a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 图片链接嵌套，图片解释 */
+#nice figure a + figcaption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: -35px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  line-height: 35px;
+  z-index: 20;
 }
 `;

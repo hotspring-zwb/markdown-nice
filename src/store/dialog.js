@@ -1,5 +1,4 @@
 import {observable, action} from "mobx";
-import {VERSION, VERSION_NUM} from "../utils/constant";
 
 class Dialog {
   @observable isImageOpen = false;
@@ -11,6 +10,20 @@ class Dialog {
   @observable isVersionOpen = false;
 
   @observable isFormOpen = false;
+
+  @observable isHistoryOpen = false;
+
+  @observable isSearchOpen = false;
+
+  @observable isSitDownOpen = false;
+
+  @observable isTutorialOpen = false;
+
+  @observable tutorialTitle;
+
+  @observable tutorialContent;
+
+  @observable tutorialPicture;
 
   @action
   setImageOpen = (isImageOpen) => {
@@ -36,14 +49,43 @@ class Dialog {
   setFormOpen = (isFormOpen) => {
     this.isFormOpen = isFormOpen;
   };
+
+  @action
+  setHistoryOpen = (isHistoryOpen) => {
+    this.isHistoryOpen = isHistoryOpen;
+  };
+
+  @action
+  setSearchOpen = (isSearchOpen) => {
+    this.isSearchOpen = isSearchOpen;
+  };
+
+  @action
+  setSitDownOpen = (isSitDownOpen) => {
+    this.isSitDownOpen = isSitDownOpen;
+  };
+
+  @action
+  setTutorialOpen = (isTutorialOpen) => {
+    this.isTutorialOpen = isTutorialOpen;
+  };
+
+  @action
+  setTutorialTitle = (tutorialTitle) => {
+    this.tutorialTitle = tutorialTitle;
+  };
+
+  @action
+  setTutorialContent = (tutorialContent) => {
+    this.tutorialContent = tutorialContent;
+  };
+
+  @action
+  setTutorialPicture = (tutorialPicture) => {
+    this.tutorialPicture = tutorialPicture;
+  };
 }
 
 const store = new Dialog();
-
-const isVersionDiff = localStorage.getItem(VERSION) !== VERSION_NUM;
-if (isVersionDiff) {
-  store.isVersionOpen = true;
-  localStorage.setItem(VERSION, VERSION_NUM);
-}
 
 export default store;
